@@ -3,15 +3,18 @@ package com.app.todo.controller;
 
 import com.app.todo.models.Task;
 import com.app.todo.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskRepository repo;
@@ -36,6 +39,16 @@ public class TaskController {
         return repo.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public Page<Task> getTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy
+    ){
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
+        return repo.findAll(pageable);
     }
 
     @PutMapping("/{id}")
