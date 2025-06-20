@@ -40,16 +40,7 @@ public class TaskController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    @GetMapping
-    public Page<Task> getTasks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy
-    ){
-        Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
-        return repo.findAll(pageable);
-    }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable int id, @RequestBody Task update) {
